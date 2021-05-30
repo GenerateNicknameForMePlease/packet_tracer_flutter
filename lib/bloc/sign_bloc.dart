@@ -20,7 +20,7 @@ class SignBloc extends Cubit<SignState> {
 
   Future<void> login({String login, String password}) async {
     emit(LoadingSignState());
-    final token = base64Encode(utf8.encode('$login:$password'));
+    final token = 'Basic ${base64Encode(utf8.encode('$login:$password'))}';
     try {
       await _authRepository.auth(token);
       LocalStorageApi.instance.setToken(token);
@@ -39,7 +39,7 @@ class SignBloc extends Cubit<SignState> {
         login: login,
         password: password,
       );
-      final token = base64Encode(utf8.encode('$login:$password'));
+      final token = 'Basic ${base64Encode(utf8.encode('$login:$password'))}';
       LocalStorageApi.instance.setToken(token);
       emit(SuccessSignState());
     } catch (e) {
