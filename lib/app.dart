@@ -18,7 +18,7 @@ class App extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Название',
+              'Delay calculator',
               style: TextStyle(fontSize: 48),
             ),
             const SizedBox(height: 100),

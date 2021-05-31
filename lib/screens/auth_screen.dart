@@ -4,6 +4,7 @@ import 'package:packet_tracer/bloc/sign_bloc.dart';
 import 'package:packet_tracer/screens/main_screen.dart';
 import 'package:packet_tracer/utils/constants.dart';
 import 'package:packet_tracer/utils/toast.dart';
+import 'package:packet_tracer/utils/utils.dart';
 
 class AuthScreen extends StatefulWidget {
   final bool isRegistration;
@@ -55,6 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
             return Scaffold(
               appBar: AppBar(
                 title: Text(widget.isRegistration ? 'Регистрация' : 'Вход'),
+                backgroundColor: AppColors.green25D366,
               ),
               body: SizedBox(
                 width: MediaQuery.of(context).size.width,

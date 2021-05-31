@@ -3,4 +3,6 @@ class ApiPath {
 
   static const users = 'users/';
   static const devicesList = 'devices/list/';
+  static const userTemplates = 'user_templates/';
+  static const calculateDelay = 'calculate_delay/';
 }

@@ -17,6 +17,15 @@ class WidgetPosition extends Equatable {
     );
   }
 
+  Offset get center => Offset(position.dx + 45, position.dy + 32);
+
   @override
   List<Object> get props => [index];
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['device_id'] = device.id;
+    data['offset'] = [position.dx, position.dy];
+    return data;
+  }
 }
