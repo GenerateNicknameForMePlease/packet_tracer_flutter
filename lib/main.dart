@@ -22,11 +22,18 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => MainDataBloc()),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Delay calculator',
         debugShowCheckedModeBanner: false,
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],
         theme: ThemeData(
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: _NoAnimations(),
+            TargetPlatform.iOS: _NoAnimations(),
+            TargetPlatform.linux: _NoAnimations(),
+            TargetPlatform.macOS: _NoAnimations(),
+            TargetPlatform.windows: _NoAnimations(),
+          }),
           primarySwatch: Colors.blue,
           buttonTheme: ButtonThemeData(
             focusColor: AppColors.green25D366,
@@ -40,5 +47,18 @@ class MyApp extends StatelessWidget {
         home: App(),
       ),
     );
+  }
+}
+
+class _NoAnimations extends PageTransitionsBuilder {
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }
