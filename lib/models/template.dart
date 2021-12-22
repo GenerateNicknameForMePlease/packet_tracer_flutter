@@ -8,8 +8,9 @@ class Template {
   final List<IndexLine> edges;
   final int id;
   final String image;
+  final num result;
 
-  const Template({this.nodes, this.edges, this.id, this.image});
+  const Template({this.nodes, this.edges, this.id, this.image, this.result});
 
   factory Template.init() {
     return Template(
@@ -38,12 +39,13 @@ class Template {
     );
   }
 
-  Template copyWith({List<IndexLine> edges}) {
+  Template copyWith({List<IndexLine> edges, num result}) {
     return Template(
       image: image,
       id: id,
       edges: edges ?? this.edges,
       nodes: nodes,
+      result: result ?? this.result,
     );
   }
 

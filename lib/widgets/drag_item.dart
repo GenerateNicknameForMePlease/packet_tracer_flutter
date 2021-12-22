@@ -9,6 +9,7 @@ class DragItem extends StatelessWidget {
   final bool showDelete;
   final bool isBig;
   final VoidCallback onDelete;
+  final double opacity;
 
   const DragItem({
     Key key,
@@ -18,49 +19,53 @@ class DragItem extends StatelessWidget {
     this.showDelete = false,
     this.isBig = true,
     this.onDelete,
+    this.opacity,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: color ?? Colors.white,
-      child: SizedBox(
-        width: 90,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(width: 90, height: 64),
-                Container(
-                  width: 64,
-                  height: 64,
-                  child: CachedNetworkImage(
-                    imageUrl: device.imageUrl,
+    return Opacity(
+      opacity: opacity ?? 1,
+      child: ColoredBox(
+        color: color ?? Colors.white,
+        child: SizedBox(
+          width: 90,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(width: 90, height: 64),
+                  Container(
                     width: 64,
                     height: 64,
-                  ),
-                ),
-                if (showDelete)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: GestureDetector(
-                      onTap: onDelete,
-                      behavior: HitTestBehavior.opaque,
-                      child: Icon(Icons.close),
+                    child: CachedNetworkImage(
+                      imageUrl: device.imageUrl,
+                      width: 64,
+                      height: 64,
                     ),
-                  )
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(device.name, textAlign: TextAlign.center),
-            if (index != null) ...[
+                  ),
+                  if (showDelete)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: GestureDetector(
+                        onTap: onDelete,
+                        behavior: HitTestBehavior.opaque,
+                        child: Icon(Icons.close),
+                      ),
+                    )
+                ],
+              ),
               const SizedBox(height: 10),
-              Text('$index'),
-            ]
-          ],
+              Text(device.name, textAlign: TextAlign.center),
+              if (index != null) ...[
+                const SizedBox(height: 10),
+                Text('$index'),
+              ]
+            ],
+          ),
         ),
       ),
     );

@@ -25,7 +25,7 @@ class DevicesList extends StatelessWidget {
                 bloc.addPosition(
                   WidgetPosition(
                     position: Offset(
-                      detail.offset.dx - Constants.leftSize,
+                      detail.offset.dx,
                       detail.offset.dy,
                     ),
                     device: bloc.devices[i],

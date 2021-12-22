@@ -1,6 +1,8 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:packet_tracer/app.dart';
 import 'package:packet_tracer/bloc/main_data_bloc.dart';
 import 'package:packet_tracer/bloc/user_bloc.dart';
@@ -10,6 +12,7 @@ import 'package:packet_tracer/utils/utils.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorageApi().init();
+  Intl.defaultLocale ='ru';
   runApp(MyApp());
 }
 
@@ -26,6 +29,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('ru', ''),
+        ],
         theme: ThemeData(
           pageTransitionsTheme: PageTransitionsTheme(builders: {
             TargetPlatform.android: _NoAnimations(),

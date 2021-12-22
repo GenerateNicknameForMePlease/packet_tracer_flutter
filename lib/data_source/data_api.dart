@@ -25,6 +25,15 @@ class DataApi {
     return (res.data as List).map((e) => IndexLine.fromJson(e)).toList();
   }
 
+  Future<num> getResultNew(String token, Template template) async {
+    final res = await _client.post(
+      ApiPath.calculateDelayNew,
+      options: Options(headers: {'authorization': token}),
+      data: template.toJson(),
+    );
+    return res.data['res'];
+  }
+
   Future<List<Template>> save(String token, Template template) async {
     final res = await _client.post(
       ApiPath.userTemplates,

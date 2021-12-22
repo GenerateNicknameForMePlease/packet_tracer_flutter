@@ -22,6 +22,11 @@ class DataRepository {
     return await _dataApi.getResult(token, template);
   }
 
+  Future<num> getResultNew(Template template) async {
+    final token = LocalStorageApi.instance.getToken;
+    return await _dataApi.getResultNew(token, template);
+  }
+
   Future<List<Template>> save(Template template) async {
     final token = LocalStorageApi.instance.getToken;
     return await _dataApi.save(token, template);

@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packet_tracer/bloc/main_data_bloc.dart';
 import 'package:packet_tracer/bloc/user_bloc.dart';
 import 'package:packet_tracer/models/line.dart';
-import 'package:packet_tracer/models/template.dart';
 import 'package:packet_tracer/models/widget_position.dart';
+import 'package:packet_tracer/screens/profile_screen.dart';
 import 'package:packet_tracer/utils/utils.dart';
 import 'package:packet_tracer/widgets/widgets.dart';
 
@@ -51,226 +50,164 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
               final bloc = context.watch<MainDataBloc>();
-              return Row(
+              return Column(
                 children: [
-                  SizedBox(
-                    width: Constants.leftSize,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Text('Мои шаблоны'),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView.separated(
-                                  itemCount: bloc.templates.length,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (_, i) {
-                                    return Center(
-                                      child: _Template(
-                                        template: bloc.templates[i],
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height - 120.0,
+                          ),
+                          for (var i in bloc.template.edges)
+                            CustomPaint(
+                              painter: LinePainter(
+                                  line: Line(
+                                    start:
+                                        bloc.getPositionByIndex(i.start).center,
+                                    end: bloc.getPositionByIndex(i.end).center,
+                                  ),
+                                  value: i.value),
+                            ),
+                          for (var i in bloc.template.nodes) ...[
+                            Positioned(
+                              left: i.position.dx,
+                              top: i.position.dy,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (_isConnectingMode) {
+                                    if (_activeConnectingIndex == null) {
+                                      setState(() {
+                                        _activeConnectingIndex = i.index;
+                                      });
+                                    } else {
+                                      if (_activeConnectingIndex != i.index) {
+                                        final start = _activeConnectingIndex;
+                                        _activeConnectingIndex = null;
+                                        bloc.addConnect(
+                                          start: start,
+                                          end: i.index,
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: LongPressDraggable(
+                                  onDragEnd: (detail) {
+                                    bloc.addPosition(
+                                      WidgetPosition(
+                                        position: Offset(
+                                          detail.offset.dx,
+                                          detail.offset.dy,
+                                        ),
+                                        device: i.device,
+                                        index: i.index,
                                       ),
                                     );
+                                    setState(() {});
                                   },
-                                  separatorBuilder: (_, __) => const SizedBox(
-                                    height: 20,
+                                  childWhenDragging: DragItem(
+                                    opacity: 0.5,
+                                    color: Colors.grey,
+                                    device: i.device,
+                                    index: i.index,
+                                  ),
+                                  feedback: Material(
+                                    child: DragItem(
+                                      color: Colors.grey,
+                                      device: i.device,
+                                      index: i.index,
+                                    ),
+                                  ),
+                                  child: DragItem(
+                                    device: i.device,
+                                    index: i.index,
+                                    color: _activeConnectingIndex == i.index
+                                        ? AppColors.green25D366
+                                        : null,
+                                    showDelete: true,
+                                    onDelete: () => bloc.removePosition(i),
                                   ),
                                 ),
                               ),
-                              if (bloc.templates.isNotEmpty) ...[
-                                GestureDetector(
-                                  onTap: () {
-                                    bloc.setTemplate(Template.init());
-                                  },
-                                  behavior: HitTestBehavior.opaque,
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.add, size: 30),
-                                      Text('Добавить шаблон'),
-                                      SizedBox(height: 20),
-                                    ],
-                                  ),
-                                )
-                              ]
-                            ],
+                            ),
+                          ],
+                          Positioned(
+                            left: 20,
+                            bottom: 5,
+                            child: SizedBox(
+                              width: 200,
+                              child: ElevatedButton(
+                                onPressed: bloc.save,
+                                child: Text('Сохранить шаблон'),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            color: Colors.white,
-                            child: Stack(
+                          Positioned(
+                            right: 20,
+                            bottom: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width -
-                                      Constants.leftSize,
-                                  height: MediaQuery.of(context).size.hashCode -
-                                      120.0,
-                                ),
-                                for (var i in bloc.template.edges)
-                                  CustomPaint(
-                                    painter: LinePainter(
-                                        line: Line(
-                                          start: bloc
-                                              .getPositionByIndex(i.start)
-                                              .center,
-                                          end: bloc
-                                              .getPositionByIndex(i.end)
-                                              .center,
-                                        ),
-                                        value: i.value),
-                                  ),
-                                for (var i in bloc.template.nodes) ...[
-                                  Positioned(
-                                    left: i.position.dx,
-                                    top: i.position.dy,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        if (_isConnectingMode) {
-                                          if (_activeConnectingIndex == null) {
-                                            setState(() {
-                                              _activeConnectingIndex = i.index;
-                                            });
-                                          } else {
-                                            if (_activeConnectingIndex !=
-                                                i.index) {
-                                              final start =
-                                                  _activeConnectingIndex;
-                                              _activeConnectingIndex = null;
-                                              bloc.addConnect(
-                                                start: start,
-                                                end: i.index,
-                                              );
-                                            }
-                                          }
-                                        }
-                                      },
-                                      behavior: HitTestBehavior.opaque,
-                                      child: LongPressDraggable(
-                                        onDragEnd: (detail) {
-                                          bloc.addPosition(
-                                            WidgetPosition(
-                                              position: Offset(
-                                                detail.offset.dx -
-                                                    Constants.leftSize,
-                                                detail.offset.dy,
-                                              ),
-                                              device: i.device,
-                                              index: i.index,
-                                            ),
-                                          );
-                                          setState(() {});
-                                        },
-                                        childWhenDragging: SizedBox(),
-                                        feedback: Material(
-                                          child: DragItem(
-                                            color: Colors.grey,
-                                            device: i.device,
-                                            index: i.index,
-                                          ),
-                                        ),
-                                        child: DragItem(
-                                          device: i.device,
-                                          index: i.index,
-                                          color:
-                                              _activeConnectingIndex == i.index
-                                                  ? AppColors.green25D366
-                                                  : null,
-                                          showDelete: true,
-                                          onDelete: () =>
-                                              bloc.removePosition(i),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                if (bloc.template.result != null) ...[
+                                  Text('Средняя задержка сети по кратчайшим маршрутам: ${bloc.template.result.toStringAsFixed(3)} мс'),
+                                  const SizedBox(height: 16),
                                 ],
-                                Positioned(
-                                  left: 20,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    width: 200,
-                                    child: ElevatedButton(
-                                      onPressed: bloc.save,
-                                      child: Text('Сохранить шаблон'),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 20,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    width: 200,
-                                    child: ElevatedButton(
-                                      onPressed: bloc.getResult,
-                                      child: Text('Рассчитать'),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 20,
-                                  left: 20,
-                                  child: Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _isConnectingMode,
-                                        onChanged: (v) {
-                                          setState(() {
-                                            _isConnectingMode = v;
-                                            if (_isConnectingMode == false) {
-                                              _activeConnectingIndex = null;
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      Text('Режим соединения')
-                                    ],
+                                SizedBox(
+                                  width: 200,
+                                  child: ElevatedButton(
+                                    onPressed: bloc.getResultNew,
+                                    child: Text('Рассчитать'),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        DevicesList(),
-                      ],
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 20),
+                                Checkbox(
+                                  value: _isConnectingMode,
+                                  onChanged: (v) {
+                                    setState(() {
+                                      _isConnectingMode = v;
+                                      if (_isConnectingMode == false) {
+                                        _activeConnectingIndex = null;
+                                      }
+                                    });
+                                  },
+                                ),
+                                Text('Режим соединения'),
+                                const Spacer(),
+                                IconButton(
+                                  icon: Icon(Icons.account_circle),
+                                  iconSize: 30,
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => ProfileScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  DevicesList(),
                 ],
               );
             },
           );
         },
-      ),
-    );
-  }
-}
-
-class _Template extends StatelessWidget {
-  final Template template;
-
-  const _Template({Key key, this.template}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final size = 80.0;
-    return GestureDetector(
-      onTap: () {
-        context.read<MainDataBloc>().setTemplate(template);
-      },
-      behavior: HitTestBehavior.opaque,
-      child: CachedNetworkImage(
-        imageUrl: template.image,
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
       ),
     );
   }

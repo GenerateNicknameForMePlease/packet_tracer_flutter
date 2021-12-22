@@ -99,6 +99,17 @@ class MainDataBloc extends Cubit<MainDataState> {
     }
   }
 
+  Future<void> getResultNew() async {
+    try {
+      final res = await _dataRepository.getResultNew(_bufTemplate);
+      _bufTemplate = _bufTemplate.copyWith(result: res * 1000);
+      emit(DataMainDataState());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
   Future<void> save() async {
     try {
       _templates = await _dataRepository.save(_bufTemplate);
