@@ -6,6 +6,8 @@ import 'package:packet_tracer/models/template.dart';
 import 'package:packet_tracer/screens/feedback_screen.dart';
 import 'package:packet_tracer/utils/utils.dart';
 
+import 'add_device_screen.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key key}) : super(key: key);
 
@@ -80,17 +82,32 @@ class ProfileScreen extends StatelessWidget {
               Positioned(
                 bottom: 20,
                 right: 20,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => FeedbackScreen(),
-                      ),
-                    );
-                  },
-                  child: Text('Создать обращение в техподдержку'),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AddDeviceScreen(),
+                          ),
+                        );
+                      },
+                      child: Text('Добавить устройство'),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => FeedbackScreen(),
+                          ),
+                        );
+                      },
+                      child: Text('Создать обращение в техподдержку'),
+                    ),
+                  ],
                 ),
-              )
+              ),
             ],
           );
         },

@@ -1,7 +1,11 @@
 class Device {
+  // уникальный идентификатор устройства
   final int id;
+  // название устройства, которое будет отображаться на экране
   final String name;
+  // тип устройства (конечное устройство, роутер и тд)
   final DeviceType deviceType;
+  // ссылка на изображение
   final String imageUrl;
 
   const Device({this.id, this.name, this.deviceType, this.imageUrl});
@@ -17,7 +21,9 @@ class Device {
 }
 
 class DeviceType {
+  // уникальный идентификатор типа устройства
   final int id;
+  // название типа устройства
   final String name;
 
   const DeviceType({this.id, this.name});

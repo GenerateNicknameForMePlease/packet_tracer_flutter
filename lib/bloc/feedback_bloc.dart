@@ -26,7 +26,7 @@ class FeedbackBloc extends Cubit<FeedbackState> {
     try {
       await _feedbackRepository.sendFeedback(feedback);
       emit(SuccessFeedbackState());
-      ToastMsg.showToast('Обращение успешно загеристрировано!\n'
+      ToastMsg.showToast('Обращение успешно зарегистрировано!\n'
           'Проверьте почту для получения дополнительной информации');
     } catch (e) {
       print(e);
