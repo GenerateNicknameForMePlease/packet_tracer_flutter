@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:packet_tracer/models/availability.dart';
 import 'package:packet_tracer/models/device.dart';
 import 'package:packet_tracer/models/line.dart';
 import 'package:packet_tracer/models/template.dart';
@@ -16,22 +17,13 @@ class DataApi {
     return data.map((e) => Device.fromJson(e)).toList();
   }
 
-  Future<List<IndexLine>> getResult(String token, Template template) async {
+  Future<Template> getAvailability(String token, Template template) async {
     final res = await _client.post(
-      ApiPath.calculateDelay,
+      ApiPath.getAvailability,
       options: Options(headers: {'authorization': token}),
       data: template.toJson(),
     );
-    return (res.data as List).map((e) => IndexLine.fromJson(e)).toList();
-  }
-
-  Future<num> getResultNew(String token, Template template) async {
-    final res = await _client.post(
-      ApiPath.calculateDelayNew,
-      options: Options(headers: {'authorization': token}),
-      data: template.toJson(),
-    );
-    return res.data['res'];
+    return Template.fromJson(res.data);
   }
 
   Future<List<Template>> save(String token, Template template) async {

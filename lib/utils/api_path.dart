@@ -4,7 +4,6 @@ class ApiPath {
   static const users = 'users/';
   static const devicesList = 'devices/list/';
   static const userTemplates = 'user_templates/';
-  static const calculateDelay = 'calculate_delay/';
-  static const calculateDelayNew = 'calculate_delay_new/';
+  static const getAvailability = 'availability/';
   static const feedback = 'feedback/';
 }

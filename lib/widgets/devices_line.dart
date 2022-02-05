@@ -6,6 +6,9 @@ import 'package:packet_tracer/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class DevicesList extends StatelessWidget {
+  final Offset offset;
+
+  const DevicesList({Key key, this.offset}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +27,8 @@ class DevicesList extends StatelessWidget {
               onDragEnd: (detail) {
                 bloc.addPosition(
                   WidgetPosition(
-                    position: Offset(
-                      detail.offset.dx,
-                      detail.offset.dy,
-                    ),
+                    position: detail.offset,
+                    localOffset: offset,
                     device: bloc.devices[i],
                   ),
                 );

@@ -16,6 +16,11 @@ class LoadingAddDeviceState extends AddDeviceState {
 
 class DataAddDeviceState extends AddDeviceState {
   DataAddDeviceState(bool canSend) : super(canSend);
+
+  @override
+  bool operator ==(Object other) {
+    return false;
+  }
 }
 
 class SuccessAddDeviceState extends AddDeviceState {
@@ -56,6 +61,11 @@ class AddDeviceBloc extends Cubit<AddDeviceState> {
             .length ==
         experiments.length;
     emit(DataAddDeviceState(canSend));
+  }
+
+  void addExperiment() {
+    experiments.add(Experiment());
+    emit(DataAddDeviceState(false));
   }
 
   Future<void> sendFiles() async {

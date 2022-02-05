@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packet_tracer/models/device.dart';
 import 'package:packet_tracer/models/line.dart';
@@ -89,24 +91,28 @@ class MainDataBloc extends Cubit<MainDataState> {
     emit(DataMainDataState());
   }
 
-  Future<void> getResult() async {
-    try {
-      final res = await _dataRepository.getResult(_bufTemplate);
-      _bufTemplate = _bufTemplate.copyWith(edges: res);
-      emit(DataMainDataState());
-    } catch (e) {
-      print(e);
-    }
+  void setDirectiveTime(int time) {
+    _bufTemplate = _bufTemplate.copyWith(
+      directiveTime: time,
+    );
+    emit(DataMainDataState());
   }
 
-  Future<void> getResultNew() async {
-    try {
-      final res = await _dataRepository.getResultNew(_bufTemplate);
-      _bufTemplate = _bufTemplate.copyWith(result: res * 1000);
+  void setLocalOffset(Offset offset) {
+    _bufTemplate = _bufTemplate.copyWith(
+      localOffset: _bufTemplate.localOffset + offset,
+    );
+    emit(DataMainDataState());
+  }
+
+  Future<void> getAvailability() async {
+    // try {
+      final res = await _dataRepository.getAvailability(_bufTemplate);
+      _bufTemplate = res;
       emit(DataMainDataState());
-    } catch (e) {
-      print(e);
-    }
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
 

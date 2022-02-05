@@ -5,19 +5,29 @@ import 'package:packet_tracer/models/device.dart';
 class WidgetPosition extends Equatable {
   final Device device;
   final Offset position;
+  final Offset localOffset;
   final int index;
 
-  const WidgetPosition({this.index, this.device, this.position});
+  const WidgetPosition({
+    this.index,
+    this.device,
+    this.position,
+    this.localOffset,
+  });
 
-  WidgetPosition copyWith({int index}) {
+  WidgetPosition copyWith({int index, bool isLocalMove}) {
     return WidgetPosition(
-      index:  index ?? this.index,
+      index: index ?? this.index,
       device: device,
       position: position,
+      localOffset: localOffset,
     );
   }
 
-  Offset get center => Offset(position.dx + 45, position.dy + 32);
+  Offset get center => Offset(
+        position.dx + localOffset.dx + 45,
+        position.dy + localOffset.dy + 32,
+      );
 
   @override
   List<Object> get props => [index];
@@ -26,6 +36,7 @@ class WidgetPosition extends Equatable {
     final data = <String, dynamic>{};
     data['device_id'] = device.id;
     data['offset'] = [position.dx, position.dy];
+    data['local_offset'] = [localOffset.dx, localOffset.dy];
     return data;
   }
 }

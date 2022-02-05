@@ -27,6 +27,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
               builder: (context, state) {
                 final bloc = context.watch<AddDeviceBloc>();
                 final exp = bloc.experiments;
+                print('sdfsdfsdf ${exp.length}');
                 return Stack(
                   fit: StackFit.expand,
                   children: [
@@ -35,14 +36,25 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(top: 30, bottom: 20),
-                          child: Text('Загрузите файлы в формате .txt с данными времени отправления/прибытия пакетов. \nЗагрузите 5 разных измерений',
+                          child: Text(
+                            'Загрузите файлы в формате .txt с данными времени отправления/прибытия пакетов. \nЗагрузите 5 разных измерений',
                             textAlign: TextAlign.center,
                           ),
                         ),
                         Expanded(
                           child: ListView.separated(
-                            itemCount: 5,
+                            itemCount: exp.length == 10 ? exp.length : exp.length + 1,
                             itemBuilder: (_, i) {
+                              if (i == exp.length) {
+                                return Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      bloc.addExperiment();
+                                    },
+                                    icon: Icon(Icons.add),
+                                  ),
+                                );
+                              }
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -115,9 +127,9 @@ class _Item extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<AddDeviceBloc>().pickFile(
-          exp: index,
-          isOtp: isOtp,
-        );
+              exp: index,
+              isOtp: isOtp,
+            );
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
