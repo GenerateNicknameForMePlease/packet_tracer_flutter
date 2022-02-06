@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packet_tracer/bloc/device_characteristic_bloc.dart';
 import 'package:packet_tracer/models/device.dart';
+import 'package:packet_tracer/utils/utils.dart';
 
 class GraphDialog extends StatelessWidget {
   final Device device;
@@ -33,12 +34,7 @@ class GraphDialog extends StatelessWidget {
                   LineChartBarData(
                     isCurved: true,
                     colors: [
-                      Colors.red,
-                      Colors.orange,
-                      Colors.yellow,
-                      Colors.green,
-                      Colors.blue,
-                      Colors.purple
+                      AppColors.green25D366,
                     ],
                     barWidth: 1,
                     isStrokeCapRound: false,
