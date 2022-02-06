@@ -4,8 +4,11 @@ import 'package:packet_tracer/models/device.dart';
 
 class WidgetPosition extends Equatable {
   final Device device;
+  // позиция для сервера
   final Offset position;
+  // локальная позиция сдвига для корректной работы перетаскиваний
   final Offset localOffset;
+  // позиционный номер (отображается на экране)
   final int index;
 
   const WidgetPosition({

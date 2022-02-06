@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:packet_tracer/models/availability.dart';
 import 'package:packet_tracer/models/device.dart';
-import 'package:packet_tracer/models/line.dart';
 import 'package:packet_tracer/models/template.dart';
 import 'package:packet_tracer/utils/utils.dart';
 

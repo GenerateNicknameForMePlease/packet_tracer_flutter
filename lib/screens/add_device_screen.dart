@@ -27,7 +27,6 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
               builder: (context, state) {
                 final bloc = context.watch<AddDeviceBloc>();
                 final exp = bloc.experiments;
-                print('sdfsdfsdf ${exp.length}');
                 return Stack(
                   fit: StackFit.expand,
                   children: [

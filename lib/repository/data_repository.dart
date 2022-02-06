@@ -1,8 +1,6 @@
 import 'package:packet_tracer/data_source/data_api.dart';
 import 'package:packet_tracer/data_source/local_storage.dart';
-import 'package:packet_tracer/models/availability.dart';
 import 'package:packet_tracer/models/device.dart';
-import 'package:packet_tracer/models/line.dart';
 import 'package:packet_tracer/models/template.dart';
 
 class DataRepository {

@@ -6,12 +6,16 @@ import 'package:packet_tracer/models/widget_position.dart';
 import 'availability.dart';
 
 class Template {
+  // данные каждого узла
   final List<WidgetPosition> nodes;
+  // данные ребер
   final List<IndexLine> edges;
   final int id;
   final String image;
   final int directiveTime;
+  // результат
   final Availability result;
+  // локальный сдваг
   final Offset localOffset;
 
   const Template({

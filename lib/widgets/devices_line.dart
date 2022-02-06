@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:packet_tracer/bloc/main_data_bloc.dart';
 import 'package:packet_tracer/models/widget_position.dart';
-import 'package:packet_tracer/utils/utils.dart';
 import 'package:packet_tracer/widgets/graph_dialog.dart';
 import 'package:packet_tracer/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +25,6 @@ class DevicesList extends StatelessWidget {
           return Center(
             child: GestureDetector(
               onTap: () {
-                print('sdfsdfsfsdf');
                 showDialog(
                   context: context,
                   builder: (_) => GraphDialog(device: bloc.devices[i]),

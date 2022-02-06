@@ -1,13 +1,11 @@
 class User {
-  final String chatToken;
   final int id;
 
-  const User({this.id, this.chatToken});
+  const User({this.id});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      chatToken: json['chat_token'],
     );
   }
 }

@@ -8,29 +8,18 @@ class Line {
 }
 
 class IndexLine {
+  // от какого элемента ведем
   final int start;
+  // к какому элементу ведем
   final int end;
+  // значение ИХ от start до end
   final num toStart;
+  // значение ИХ от end до start
   final num toEnd;
 
   const IndexLine({this.start, this.end, this.toStart, this.toEnd});
 
   factory IndexLine.fromJson(Map<String, dynamic> json) {
-    // print("json['start'] ${json['to_start'].runtimeType}");
-    // final type = json['start'].runtimeType;
-    // try {
-    //   print(json);
-    //   print((json['start'] == null ? null : type is String ? int.parse(json['start']) : json['start']).runtimeType);
-    //   print(json['start']);
-    //   print(json['start'] == null);
-    //   print(type is String);
-    //   final x = IndexLine(
-    //     start: int.parse(json['start']),
-    //     end: int.parse(json['end']),
-    //   );
-    // } catch (e) {
-    //   print('11231231131313131313');
-    // }
     return IndexLine(
       start: int.parse(json['start']),
       end: int.parse(json['end']),

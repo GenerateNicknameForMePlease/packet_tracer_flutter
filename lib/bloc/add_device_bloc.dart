@@ -73,8 +73,7 @@ class AddDeviceBloc extends Cubit<AddDeviceState> {
     try {
       await _addDeviceRepository.sendDevice(experiments);
       emit(SuccessAddDeviceState(true));
-      ToastMsg.showToast('Обращение успешно зарегистрировано!\n'
-          'Проверьте почту для получения дополнительной информации');
+      ToastMsg.showToast('Устройство успешно добавлено');
     } catch (e) {
       print(e);
       ToastMsg.showToast('Что-то пошло не так');
