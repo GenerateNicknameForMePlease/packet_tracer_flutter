@@ -8,6 +8,7 @@ import 'package:packet_tracer/models/template.dart';
 import 'package:packet_tracer/models/widget_position.dart';
 import 'package:packet_tracer/screens/profile_screen.dart';
 import 'package:packet_tracer/utils/utils.dart';
+import 'package:packet_tracer/widgets/graph_dialog.dart';
 import 'package:packet_tracer/widgets/widgets.dart';
 
 class MainScreen extends StatefulWidget {
@@ -94,12 +95,8 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onPanStart: (e) {
-                        print('start$e');
-                      },
                       onPanUpdate: (e) {
                         bloc.setLocalOffset(e.delta);
-                        print('update $e');
                       },
                       child: Container(
                         color: Colors.white,
@@ -146,6 +143,7 @@ class _MainScreenState extends State<MainScreen> {
                                           );
                                         }
                                       }
+                                    } else {
                                     }
                                   },
                                   behavior: HitTestBehavior.opaque,
@@ -156,7 +154,8 @@ class _MainScreenState extends State<MainScreen> {
                                           position: detail.offset,
                                           device: i.device,
                                           index: i.index,
-                                          localOffset: bloc.template.localOffset,
+                                          localOffset:
+                                              bloc.template.localOffset,
                                         ),
                                       );
                                       setState(() {});
@@ -254,7 +253,8 @@ class _MainScreenState extends State<MainScreen> {
                                         ),
                                       ],
                                     ),
-                                    Text('Смещение: ${bloc.template.localOffset.dx.toInt()}, ${bloc.template.localOffset.dy.toInt()}'),
+                                    Text(
+                                        'Смещение: ${bloc.template.localOffset.dx.toInt()}, ${bloc.template.localOffset.dy.toInt()}'),
                                     Text(
                                         'Директивное время: ${bloc.template.directiveTime ?? ''}'),
                                     SizedBox(

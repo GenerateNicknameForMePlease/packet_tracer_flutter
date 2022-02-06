@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:packet_tracer/bloc/main_data_bloc.dart';
 import 'package:packet_tracer/models/widget_position.dart';
 import 'package:packet_tracer/utils/utils.dart';
+import 'package:packet_tracer/widgets/graph_dialog.dart';
 import 'package:packet_tracer/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -23,24 +24,33 @@ class DevicesList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: (_, i) {
           return Center(
-            child: LongPressDraggable(
-              onDragEnd: (detail) {
-                bloc.addPosition(
-                  WidgetPosition(
-                    position: detail.offset,
-                    localOffset: offset,
-                    device: bloc.devices[i],
-                  ),
+            child: GestureDetector(
+              onTap: () {
+                print('sdfsdfsfsdf');
+                showDialog(
+                  context: context,
+                  builder: (_) => GraphDialog(device: bloc.devices[i]),
                 );
               },
-              feedback: Material(
+              child: LongPressDraggable(
+                onDragEnd: (detail) {
+                  bloc.addPosition(
+                    WidgetPosition(
+                      position: detail.offset,
+                      localOffset: offset,
+                      device: bloc.devices[i],
+                    ),
+                  );
+                },
+                feedback: Material(
+                  child: DragItem(
+                    color: Colors.grey,
+                    device: bloc.devices[i],
+                  ),
+                ),
                 child: DragItem(
-                  color: Colors.grey,
                   device: bloc.devices[i],
                 ),
-              ),
-              child: DragItem(
-                device: bloc.devices[i],
               ),
             ),
           );

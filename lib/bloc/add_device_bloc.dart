@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packet_tracer/models/experiment.dart';
-import 'package:packet_tracer/repository/add_device_repository.dart';
+import 'package:packet_tracer/repository/device_repository.dart';
 import 'package:packet_tracer/utils/toast.dart';
 
 abstract class AddDeviceState {
@@ -30,7 +30,7 @@ class SuccessAddDeviceState extends AddDeviceState {
 class AddDeviceBloc extends Cubit<AddDeviceState> {
   AddDeviceBloc() : super(DataAddDeviceState(false));
 
-  final _addDeviceRepository = AddDeviceRepository();
+  final _addDeviceRepository = DeviceRepository();
 
   final List<Experiment> experiments = [
     Experiment(),
