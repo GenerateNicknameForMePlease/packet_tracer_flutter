@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packet_tracer/bloc/add_device_bloc.dart';
+import 'package:packet_tracer/bloc/main_data_bloc.dart';
 import 'package:packet_tracer/utils/utils.dart';
 
 class AddDeviceScreen extends StatefulWidget {
@@ -11,6 +12,25 @@ class AddDeviceScreen extends StatefulWidget {
 }
 
 class _AddDeviceScreenState extends State<AddDeviceScreen> {
+  TextEditingController _controller;
+  AddDeviceBloc bloc;
+
+  @override
+  void initState() {
+    bloc = AddDeviceBloc();
+    _controller = TextEditingController()
+      ..addListener(() {
+        bloc.setName(_controller.text);
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,13 +39,17 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
         centerTitle: true,
         backgroundColor: AppColors.green25D366,
       ),
-      body: BlocProvider(
-        create: (_) => AddDeviceBloc(),
+      body: BlocProvider.value(
+        value: bloc,
         child: Builder(
           builder: (context) {
-            return BlocBuilder<AddDeviceBloc, AddDeviceState>(
+            return BlocConsumer<AddDeviceBloc, AddDeviceState>(
+              listener: (_, state) {
+                if (state is SuccessAddDeviceState) {
+                  context.read<MainDataBloc>().reloadDevices();
+                }
+              },
               builder: (context, state) {
-                final bloc = context.watch<AddDeviceBloc>();
                 final exp = bloc.experiments;
                 return Stack(
                   fit: StackFit.expand,
@@ -36,15 +60,59 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 30, bottom: 20),
                           child: Text(
-                            'Загрузите файлы в формате .txt с данными времени отправления/прибытия пакетов. \nЗагрузите 5 разных измерений',
+                            'Загрузите файлы в формате .txt с данными времени отправления/прибытия пакетов. \nЗагрузите от 5 до 10 разных измерений',
                             textAlign: TextAlign.center,
                           ),
                         ),
                         Expanded(
                           child: ListView.separated(
-                            itemCount: exp.length == 10 ? exp.length : exp.length + 1,
+                            itemCount:
+                                exp.length >= 10 ? exp.length : exp.length + 3,
+                            shrinkWrap: true,
                             itemBuilder: (_, i) {
                               if (i == exp.length) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 200,
+                                    child: TextField(
+                                      controller: _controller,
+                                      decoration: InputDecoration(
+                                        hintText: 'Название устройства',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (i == exp.length + 1) {
+                                return Center(
+                                  child: ListView.separated(
+                                      itemCount: bloc.types.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, j) {
+                                        return Center(
+                                          child: SizedBox(
+                                            width: 200,
+                                            child: Row(
+                                              children: [
+                                                Checkbox(
+                                                  value: bloc.index == j,
+                                                  onChanged: (value) {
+                                                    bloc.setIndex(j);
+                                                  },
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Text(bloc.types[j].name),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      separatorBuilder: (_, __) {
+                                        return SizedBox(height: 8);
+                                      }),
+                                );
+                              }
+                              if (i == exp.length + 2) {
                                 return Center(
                                   child: IconButton(
                                     onPressed: () {
@@ -79,7 +147,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 30, bottom: 20),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: bloc.sendFiles,
                             style: ButtonStyle(
                               backgroundColor: state.canSend
                                   ? null

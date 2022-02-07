@@ -56,6 +56,11 @@ class MainDataBloc extends Cubit<MainDataState> {
     }
   }
 
+  Future<void> reloadDevices() async {
+    _devices = await _dataRepository.getDevices();
+    emit(DataMainDataState());
+  }
+
   WidgetPosition getPositionByIndex(int index) => _bufTemplate.nodes.firstWhere(
         (e) => e.index == index,
       );
