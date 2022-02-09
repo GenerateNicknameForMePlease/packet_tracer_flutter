@@ -27,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    context.read<UserBloc>().load();
     _controller = TextEditingController();
     super.initState();
   }
@@ -57,7 +58,13 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<UserBloc, UserState>(
+      body: BlocConsumer<UserBloc, UserState>(
+        listener: (_, state) {
+          if (state is DataUserState) {
+            context.read<MainDataBloc>().load();
+          }
+        },
+        listenWhen: (p, c) => p is LoadingUserState,
         builder: (context, state) {
           if (state is LoadingUserState) {
             return Column(

@@ -11,9 +11,7 @@ class LoadingUserState extends UserState {}
 class DataUserState extends UserState {}
 
 class UserBloc extends Cubit<UserState> {
-  UserBloc() : super(LoadingUserState()) {
-    _load();
-  }
+  UserBloc() : super(LoadingUserState());
 
   User _user;
 
@@ -21,7 +19,7 @@ class UserBloc extends Cubit<UserState> {
 
   final _authRepository = AuthRepository();
 
-  Future<void> _load() async {
+  Future<void> load() async {
     try {
       final token = LocalStorageApi.instance.getToken;
       _user = await _authRepository.auth(token);
@@ -29,7 +27,7 @@ class UserBloc extends Cubit<UserState> {
     } catch (e) {
       print(e);
       await Future.delayed(Constants.requestDuration);
-      // _load();
+      load();
     }
   }
 
@@ -37,7 +35,5 @@ class UserBloc extends Cubit<UserState> {
     LocalStorageApi.instance.logout();
     emit(LoadingUserState());
   }
-
-
 }
 

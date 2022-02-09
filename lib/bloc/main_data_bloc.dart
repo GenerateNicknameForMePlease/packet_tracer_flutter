@@ -23,9 +23,7 @@ class LoadingMainDataState extends MainDataState {}
 class DataMainDataState extends MainDataState {}
 
 class MainDataBloc extends Cubit<MainDataState> {
-  MainDataBloc() : super(LoadingMainDataState()) {
-    _load();
-  }
+  MainDataBloc() : super(LoadingMainDataState());
 
   final _dataRepository = DataRepository();
 
@@ -43,7 +41,8 @@ class MainDataBloc extends Cubit<MainDataState> {
 
   int _counter = 1;
 
-  Future<void> _load() async {
+  Future<void> load() async {
+    emit(LoadingMainDataState());
     try {
       _devices = await _dataRepository.getDevices();
       _templates = await _dataRepository.getTemplates();
@@ -52,7 +51,7 @@ class MainDataBloc extends Cubit<MainDataState> {
     } catch (e) {
       print(e);
       await Future.delayed(Constants.requestDuration);
-      _load();
+      load();
     }
   }
 

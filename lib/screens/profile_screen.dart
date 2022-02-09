@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:packet_tracer/app.dart';
 import 'package:packet_tracer/bloc/main_data_bloc.dart';
+import 'package:packet_tracer/bloc/user_bloc.dart';
+import 'package:packet_tracer/data_source/local_storage.dart';
 import 'package:packet_tracer/models/template.dart';
 import 'package:packet_tracer/screens/feedback_screen.dart';
 import 'package:packet_tracer/utils/utils.dart';
@@ -18,6 +21,25 @@ class ProfileScreen extends StatelessWidget {
         title: Text('Профиль'),
         centerTitle: true,
         backgroundColor: AppColors.green25D366,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              context.read<UserBloc>().logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => App()),
+                (route) => false,
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.logout),
+                Text('Выйти из аккаунта'),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+        ],
       ),
       body: BlocBuilder<MainDataBloc, MainDataState>(
         builder: (context, snapshot) {
