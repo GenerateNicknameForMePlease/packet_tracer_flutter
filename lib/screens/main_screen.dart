@@ -126,6 +126,7 @@ class _MainScreenState extends State<MainScreen> {
                                       bloc.template,
                                     ),
                                   ),
+                                  centerOffset: bloc.template.localOffset,
                                   indexLine: i,
                                 ),
                               ),
@@ -312,8 +313,9 @@ class _MainScreenState extends State<MainScreen> {
 class LinePainter extends CustomPainter {
   final Line line;
   final IndexLine indexLine;
+  final Offset centerOffset;
 
-  LinePainter({this.line, this.indexLine});
+  LinePainter({this.line, this.indexLine, this.centerOffset});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -328,7 +330,7 @@ class LinePainter extends CustomPainter {
       );
       final textSpan = TextSpan(
         text:
-            'От ${indexLine.start} до ${indexLine.end}: ${indexLine.toEnd} мс\nОт ${indexLine.end} до ${indexLine.start}: ${indexLine.toStart} мс',
+            'От ${indexLine.start} до ${indexLine.end}: ${indexLine.toEnd}\nОт ${indexLine.end} до ${indexLine.start}: ${indexLine.toStart}',
         style: textStyle,
       );
       final textPainter = TextPainter(
@@ -338,8 +340,8 @@ class LinePainter extends CustomPainter {
       textPainter.layout(
         minWidth: 0,
       );
-      final middleX = (line.start.dx + line.end.dx).abs() / 2;
-      final middleY = (line.start.dy + line.end.dy).abs() / 2;
+      final middleX = (line.start.dx + line.end.dx) / 2;
+      final middleY = (line.start.dy + line.end.dy) / 2;
       final xCenter = (middleX - (textPainter.width / 2));
       final yCenter = (middleY - (textPainter.height / 2));
       final offset = Offset(xCenter, yCenter);
