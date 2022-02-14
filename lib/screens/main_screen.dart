@@ -98,208 +98,227 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
               final bloc = context.watch<MainDataBloc>();
-              return Column(
+              return Stack(
+                fit: StackFit.expand,
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onPanUpdate: (e) {
-                        bloc.setLocalOffset(e.delta);
-                      },
-                      child: Container(
-                        color: Colors.white,
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              width: 500000,
-                              height: 500000,
-                            ),
-                            for (var i in bloc.template.edges)
-                              CustomPaint(
-                                painter: LinePainter(
-                                  line: Line(
-                                    start: _getCenterOffset(
-                                      bloc.getPositionByIndex(i.start),
-                                      bloc.template,
-                                    ),
-                                    end: _getCenterOffset(
-                                      bloc.getPositionByIndex(i.end),
-                                      bloc.template,
+                  Column(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onPanUpdate: (e) {
+                            bloc.setLocalOffset(e.delta);
+                          },
+                          child: Container(
+                            color: Colors.white,
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  width: 500000,
+                                  height: 500000,
+                                ),
+                                for (var i in bloc.template.edges)
+                                  CustomPaint(
+                                    painter: LinePainter(
+                                      line: Line(
+                                        start: _getCenterOffset(
+                                          bloc.getPositionByIndex(i.start),
+                                          bloc.template,
+                                        ),
+                                        end: _getCenterOffset(
+                                          bloc.getPositionByIndex(i.end),
+                                          bloc.template,
+                                        ),
+                                      ),
+                                      centerOffset: bloc.template.localOffset,
+                                      indexLine: i,
                                     ),
                                   ),
-                                  centerOffset: bloc.template.localOffset,
-                                  indexLine: i,
-                                ),
-                              ),
-                            for (var i in bloc.template.nodes) ...[
-                              Positioned(
-                                left: _getPosition(i, bloc.template).dx,
-                                top: _getPosition(i, bloc.template).dy,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (_isConnectingMode) {
-                                      if (_activeConnectingIndex == null) {
-                                        setState(() {
-                                          _activeConnectingIndex = i.index;
-                                        });
-                                      } else {
-                                        if (_activeConnectingIndex != i.index) {
-                                          final start = _activeConnectingIndex;
-                                          _activeConnectingIndex = null;
-                                          bloc.addConnect(
-                                            start: start,
-                                            end: i.index,
+                                for (var i in bloc.template.nodes) ...[
+                                  Positioned(
+                                    left: _getPosition(i, bloc.template).dx,
+                                    top: _getPosition(i, bloc.template).dy,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (_isConnectingMode) {
+                                          if (_activeConnectingIndex == null) {
+                                            setState(() {
+                                              _activeConnectingIndex = i.index;
+                                            });
+                                          } else {
+                                            if (_activeConnectingIndex !=
+                                                i.index) {
+                                              final start =
+                                                  _activeConnectingIndex;
+                                              _activeConnectingIndex = null;
+                                              bloc.addConnect(
+                                                start: start,
+                                                end: i.index,
+                                              );
+                                            }
+                                          }
+                                        } else {}
+                                      },
+                                      behavior: HitTestBehavior.opaque,
+                                      child: LongPressDraggable(
+                                        onDragEnd: (detail) {
+                                          bloc.addPosition(
+                                            WidgetPosition(
+                                              position: detail.offset,
+                                              device: i.device,
+                                              index: i.index,
+                                              localOffset:
+                                                  bloc.template.localOffset,
+                                            ),
                                           );
-                                        }
-                                      }
-                                    } else {
-                                    }
-                                  },
-                                  behavior: HitTestBehavior.opaque,
-                                  child: LongPressDraggable(
-                                    onDragEnd: (detail) {
-                                      bloc.addPosition(
-                                        WidgetPosition(
-                                          position: detail.offset,
+                                          setState(() {});
+                                        },
+                                        childWhenDragging: DragItem(
+                                          opacity: 0.5,
+                                          color: Colors.grey,
                                           device: i.device,
                                           index: i.index,
-                                          localOffset:
-                                              bloc.template.localOffset,
                                         ),
-                                      );
-                                      setState(() {});
-                                    },
-                                    childWhenDragging: DragItem(
-                                      opacity: 0.5,
-                                      color: Colors.grey,
-                                      device: i.device,
-                                      index: i.index,
-                                    ),
-                                    feedback: Material(
-                                      child: DragItem(
-                                        color: Colors.grey,
-                                        device: i.device,
-                                        index: i.index,
+                                        feedback: Material(
+                                          child: DragItem(
+                                            color: Colors.grey,
+                                            device: i.device,
+                                            index: i.index,
+                                          ),
+                                        ),
+                                        child: DragItem(
+                                          device: i.device,
+                                          index: i.index,
+                                          color:
+                                              _activeConnectingIndex == i.index
+                                                  ? AppColors.green25D366
+                                                  : null,
+                                          showDelete: true,
+                                          onDelete: () =>
+                                              bloc.removePosition(i),
+                                        ),
                                       ),
-                                    ),
-                                    child: DragItem(
-                                      device: i.device,
-                                      index: i.index,
-                                      color: _activeConnectingIndex == i.index
-                                          ? AppColors.green25D366
-                                          : null,
-                                      showDelete: true,
-                                      onDelete: () => bloc.removePosition(i),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            Positioned(
-                              left: 20,
-                              bottom: 5,
-                              child: SizedBox(
-                                width: 200,
-                                child: ElevatedButton(
-                                  onPressed: bloc.save,
-                                  child: Text('Сохранить шаблон'),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 20,
-                              bottom: 5,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  if (bloc.template.result != null) ...[
-                                    Text(
-                                        'Минимальная доступность: ${bloc.template.result.minAvailability}%\nМаксимальная доступность: ${bloc.template.result.maxAvailability}%'),
-                                    const SizedBox(height: 16),
-                                  ],
-                                  SizedBox(
-                                    width: 200,
-                                    child: ElevatedButton(
-                                      onPressed: bloc.getAvailability,
-                                      child: Text('Рассчитать'),
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                          value: _isConnectingMode,
-                                          onChanged: (v) {
-                                            setState(() {
-                                              _isConnectingMode = v;
-                                              if (_isConnectingMode == false) {
-                                                _activeConnectingIndex = null;
-                                              }
-                                            });
-                                          },
+                                Positioned(
+                                  left: 20,
+                                  bottom: 5,
+                                  child: SizedBox(
+                                    width: 200,
+                                    child: ElevatedButton(
+                                      onPressed: bloc.save,
+                                      child: Text('Сохранить шаблон'),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 20,
+                                  bottom: 5,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (bloc.template.result != null) ...[
+                                        Text(
+                                            'Минимальная доступность: ${bloc.template.result.minAvailability}%\nМаксимальная доступность: ${bloc.template.result.maxAvailability}%'),
+                                        const SizedBox(height: 16),
+                                      ],
+                                      SizedBox(
+                                        width: 200,
+                                        child: ElevatedButton(
+                                          onPressed: bloc.getAvailability,
+                                          child: Text('Рассчитать'),
                                         ),
-                                        Text('Режим соединения'),
-                                        const Spacer(),
-                                        IconButton(
-                                          icon: Icon(Icons.account_circle),
-                                          iconSize: 30,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Checkbox(
+                                              value: _isConnectingMode,
+                                              onChanged: (v) {
+                                                setState(() {
+                                                  _isConnectingMode = v;
+                                                  if (_isConnectingMode ==
+                                                      false) {
+                                                    _activeConnectingIndex =
+                                                        null;
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                            Text('Режим соединения'),
+                                            const Spacer(),
+                                            IconButton(
+                                              icon: Icon(Icons.account_circle),
+                                              iconSize: 30,
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ProfileScreen(),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                            'Смещение: ${bloc.template.localOffset.dx.toInt()}, ${bloc.template.localOffset.dy.toInt()}'),
+                                        Text(
+                                            'Директивное время: ${bloc.template.directiveTime ?? ''}'),
+                                        SizedBox(
+                                          width: 200,
+                                          child: TextField(
+                                            controller: _controller,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                            ],
+                                            decoration: InputDecoration(
+                                              hintText: 'Директивное время, мс',
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        ElevatedButton(
                                           onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) => ProfileScreen(),
-                                              ),
+                                            bloc.setDirectiveTime(
+                                              int.parse(_controller.text),
                                             );
+                                            _controller.clear();
                                           },
+                                          child: Text('Изменить'),
                                         ),
                                       ],
                                     ),
-                                    Text(
-                                        'Смещение: ${bloc.template.localOffset.dx.toInt()}, ${bloc.template.localOffset.dy.toInt()}'),
-                                    Text(
-                                        'Директивное время: ${bloc.template.directiveTime ?? ''}'),
-                                    SizedBox(
-                                      width: 200,
-                                      child: TextField(
-                                        controller: _controller,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                        ],
-                                        decoration: InputDecoration(
-                                          hintText: 'Директивное время, мс',
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        bloc.setDirectiveTime(
-                                          int.parse(_controller.text),
-                                        );
-                                        _controller.clear();
-                                      },
-                                      child: Text('Изменить'),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
+                      DevicesList(
+                        offset: bloc.template.localOffset,
+                      ),
+                    ],
+                  ),
+                  if (state is LoadMainDataState)
+                    Container(
+                      color: Colors.grey.withOpacity(0.5),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                  ),
-                  DevicesList(
-                    offset: bloc.template.localOffset,
-                  ),
                 ],
               );
             },

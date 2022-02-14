@@ -22,6 +22,8 @@ class LoadingMainDataState extends MainDataState {}
 
 class DataMainDataState extends MainDataState {}
 
+class LoadMainDataState extends MainDataState {}
+
 class MainDataBloc extends Cubit<MainDataState> {
   MainDataBloc() : super(LoadingMainDataState());
 
@@ -110,6 +112,7 @@ class MainDataBloc extends Cubit<MainDataState> {
   }
 
   Future<void> getAvailability() async {
+    emit(LoadMainDataState());
     // try {
       final res = await _dataRepository.getAvailability(_bufTemplate);
       _bufTemplate = res;
